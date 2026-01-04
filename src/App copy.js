@@ -1695,6 +1695,7 @@ const WritingModule = ({ logActivity, updateActivity, user }) => {
   const generateTopic = async (selectedLevel) => {
     setLoading(true);
     try {
+      const apiKey = process.env.REACT_APP_OPENAI_API_KEY;
       const grade = userGrade || 9;
       
       let instruction = "";
@@ -1706,10 +1707,11 @@ const WritingModule = ({ logActivity, updateActivity, user }) => {
         instruction = "Create an essay prompt with context. Provide 6-8 advanced helper words (with Korean translations in parentheses) for critical analysis.";
       }
 
-      const response = await fetch('/api/openai', {
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
         },
         body: JSON.stringify({
           model: 'gpt-4o-mini',
@@ -1797,10 +1799,13 @@ Make sure the difficulty matches Grade ${grade} ${selectedLevel} level with vari
     const topic = currentTopic;
     
     try {
-      const response = await fetch('/api/openai', {
+      const apiKey = process.env.REACT_APP_OPENAI_API_KEY;
+      
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
         },
         body: JSON.stringify({
           model: 'gpt-4o-mini',
@@ -2061,19 +2066,22 @@ const ReadingModule = ({ logActivity, updateActivity, user }) => {
     fetchUserGrade();
   }, [user]);
 
+// GPT로 지문 생성
   // GPT로 지문 생성
   const generateReading = async () => {
     setLoading(true);
     try {
+      const apiKey = process.env.REACT_APP_OPENAI_API_KEY;
       const grade = userGrade || 9;
       
       let questionCount = 3;
       let paragraphCount = level === 'Junior' ? "2-3 paragraphs" : "3 paragraphs";
       
-      const response = await fetch('/api/openai', {
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
         },
         body: JSON.stringify({
           model: 'gpt-4o-mini',
@@ -2405,12 +2413,14 @@ const GrammarModule = ({ logActivity, updateActivity, user }) => {
   const generateGrammarQuestions = async (set) => {
     setLoading(true);
     try {
+      const apiKey = process.env.REACT_APP_OPENAI_API_KEY;
       const grade = userGrade || 9;
       
-      const response = await fetch('/api/openai', {
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
         },
         body: JSON.stringify({
           model: 'gpt-4o-mini',
@@ -3287,6 +3297,8 @@ const FactCheckModule = ({ logActivity, updateActivity, user }) => {
   const generateTopics = async (category) => {
     setLoading(true);
     try {
+      const apiKey = process.env.REACT_APP_OPENAI_API_KEY;
+      
       // Supabase에서 최근 50개 주제 가져오기
       const { data: recentTopics } = await supabase
         .from('generated_topics')
@@ -3306,10 +3318,11 @@ const FactCheckModule = ({ logActivity, updateActivity, user }) => {
         categoryPrompt = 'Focus on topics requiring PERSUASIVE WRITING and EVIDENCE-BASED ARGUMENTATION. Topics should involve building strong claims with supporting evidence.';
       }
       
-      const response = await fetch('/api/openai', {
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
         },
         body: JSON.stringify({
           model: 'gpt-4o-mini',
@@ -3379,12 +3392,14 @@ Return ONLY a JSON array with this format:
   const generateHooks = async () => {
     setLoading(true);
     try {
+      const apiKey = process.env.REACT_APP_OPENAI_API_KEY;
       const topic = topics[selectedTopic];
       
-      const response = await fetch('/api/openai', {
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
         },
         body: JSON.stringify({
           model: 'gpt-4o-mini',
@@ -3418,12 +3433,14 @@ Format in Korean, numbered list. Keep each hook to 2-3 sentences.`
   const generateInsight = async () => {
     setLoading(true);
     try {
+      const apiKey = process.env.REACT_APP_OPENAI_API_KEY;
       const topic = topics[selectedTopic];
       
-      const response = await fetch('/api/openai', {
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
         },
         body: JSON.stringify({
           model: 'gpt-4o-mini',
@@ -3461,10 +3478,13 @@ Keep it concise and focused on factual debate points.`
   const submitEssay = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/openai', {
+      const apiKey = process.env.REACT_APP_OPENAI_API_KEY;
+      
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
         },
         body: JSON.stringify({
           model: 'gpt-4o-mini',
@@ -3988,9 +4008,10 @@ ${validatorChecks.objectivity ? `- 객관성: ${validatorInputs.objectivity || '
                       
                       setTranslatingHooks(true);
                       try {
-                        const response = await fetch('/api/openai', {
+                        const apiKey = process.env.REACT_APP_OPENAI_API_KEY;
+                        const response = await fetch('https://api.openai.com/v1/chat/completions', {
                           method: 'POST',
-                          headers: { 'Content-Type': 'application/json' },
+                          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
                           body: JSON.stringify({
                             model: 'gpt-4o-mini',
                             messages: [{ role: 'user', content: `Translate this Korean text to English:\n\n${hooks}` }],
@@ -4075,9 +4096,10 @@ ${validatorChecks.objectivity ? `- 객관성: ${validatorInputs.objectivity || '
                   
                   setTranslatingRevision(true);
                   try {
-                    const response = await fetch('/api/openai', {
+                    const apiKey = process.env.REACT_APP_OPENAI_API_KEY;
+                    const response = await fetch('https://api.openai.com/v1/chat/completions', {
                       method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
+                      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
                       body: JSON.stringify({
                         model: 'gpt-4o-mini',
                         messages: [{ role: 'user', content: `Translate this Korean text to English:\n\n${feedback?.revision}` }],
@@ -4135,10 +4157,11 @@ ${validatorChecks.objectivity ? `- 객관성: ${validatorInputs.objectivity || '
                 
                 setTranslatingPoints(true);
                 try {
+                  const apiKey = process.env.REACT_APP_OPENAI_API_KEY;
                   const pointsText = feedback?.learningPoints?.map(p => `${p.title}: ${p.content}`).join('\n\n');
-                  const response = await fetch('/api/openai', {
+                  const response = await fetch('https://api.openai.com/v1/chat/completions', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
                     body: JSON.stringify({
                       model: 'gpt-4o-mini',
                       messages: [{ role: 'user', content: `Translate this Korean text to English:\n\n${pointsText}` }],
